@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Nấu trân châu cùng Phát nhé</title>
+  <style>
+    :root {
+      --ng-blue-dark: #0a3673;
+      --ng-blue: #0056b3;
+      --ng-blue-bright: #1976d2;
+      --ng-blue-light: #e8f2fc;
+      --ng-blue-lighter: #f4f9ff;
+      --ng-border: #cce0f5;
+      --ng-text: #102a43;
+      --ng-muted: #486581;
+      --ng-white: #ffffff;
+      --ng-success: #15803d;
+      --ng-success-bg: #dcfce7;
+      --ng-danger: #b91c1c;
+      --ng-danger-bg: #fee2e2;
+      --shadow-sm: 0 2px 10px rgba(0, 86, 179, 0.08);
+      --shadow-md: 0 6px 20px rgba(0, 86, 179, 0.12);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      touch-action: manipulation;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f0f6fc;
+      color: var(--ng-text);
+      min-height: 100vh;
+      line-height: 1.45;
+      padding-bottom: calc(88px + env(safe-area-inset-bottom));
+    }
+
+    /* App Wrapper - Mobile first, clean centered column on larger screens */
+    .app-shell {
+      max-width: 540px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: #f4f8fd;
+      position: relative;
+      box-shadow: 0 0 30px rgba(10, 54, 115, 0.08);
+    }
+
+    /* Compact Sticky Header */
+    .header {
+      background: linear-gradient(135deg, var(--ng-blue-dark) 0%, var(--ng-blue) 70%, var(--ng-blue-bright) 100%);
+      color: var(--ng-white);
+      padding: calc(14px + env(safe-area-inset-top)) 16px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 3px 12px rgba(10, 54, 115, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .header-left h1 {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      line-height: 1.25;
+    }
+
+    .header-left p {
+      font-size: 12px;
+      opacity: 0.88;
+      margin-top: 2px;
+    }
+
+    .brand-pill {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      letter-spacing: 0.4px;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 12px 12px 16px;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+      animation: fadeUp 0.2s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Swipeable Filter Strip */
+    .filter-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 2px 10px;
+      margin-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .filter-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pill {
+      flex: 0 0 auto;
+      border: 1.5px solid var(--ng-border);
+      background: var(--ng-white);
+      color: var(--ng-blue-dark);
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pill.active {
+      background: var(--ng-blue);
+      color: var(--ng-white);
+      border-color: var(--ng-blue);
+      box-shadow: 0 3px 10px rgba(0, 86, 179, 0.25);
+    }
+
+    /* Big Mobile Memory Toggle Bar */
+    .blur-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--ng-white);
+      border: 1.5px solid var(--ng-border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+    }
+
+    .blur-bar.active {
+      background: var(--ng-blue-dark);
+      border-color: var(--ng-blue-dark);
+      color: var(--ng-white);
+    }
+
+    .blur-bar-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blur-bar-title {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .blur-bar-sub {
+      font-size: 12px;
+      opacity: 0.78;
+    }
+
+    .switch-ui {
+      width: 46px;
+      height: 26px;
+      border-radius: 999px;
+      background: #cbd5e1;
+      position: relative;
+      transition: background 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .switch-ui::after {
+      content: "";
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--ng-white);
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .blur-bar.active .switch-ui {
+      background: #38bdf8;
+    }
+
+    .blur-bar.active .switch-ui::after {
+      transform: translateX(20px);
+    }
+
+    /* Formula Cards (Mobile optimized) */
+    .cards-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--ng-white);
+      border: 1px solid var(--ng-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(90deg, var(--ng-blue-light) 0%, #f6faff 100%);
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--ng-border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ng-blue-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-tag {
+      display: inline-block;
+      align-self: flex-start;
+      background: var(--ng-blue);
+      color: var(--ng-white);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    /* Compact Mobile Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      table-layout: fixed;
+    }
+
+    th {
+      background: var(--ng-blue-lighter);
+      color: var(--ng-blue-dark);
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 9px 4px;
+      border-bottom: 1.5px solid var(--ng-border);
+    }
+
+    td {
+      padding: 13px 4px;
+      border-bottom: 1px solid #edf4fc;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td.weight-col {
+      background: #f7fbff;
+      color: var(--ng-blue-dark);
+      font-weight: 800;
+    }
+
+    .secret-cell {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .secret-cell span.val {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .blur-mode .secret-cell span.val {
+      background: var(--ng-blue-light);
+      color: transparent;
+      filter: blur(6px);
+      min-width: 54px;
+    }
+
+    .blur-mode .secret-cell.revealed span.val {
+      filter: none;
+      background: var(--ng-success-bg);
+      color: var(--ng-success);
+    }
+
+    .tip-box {
+      background: #f0f7ff;
+      border-top: 1px dashed var(--ng-border);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--ng-blue-dark);
+      display: flex;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    /* Flashcard Mobile */
+    .fc-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ng-blue-dark);
+    }
+
+    .shuffle-mini {
+      border: 1.5px solid var(--ng-blue);
+      background: var(--ng-white);
+      color: var(--ng-blue);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .fc-scene {
+      perspective: 1000px;
+      height: 290px;
+      margin-bottom: 14px;
+      cursor: pointer;
+    }
+
+    .fc-card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      transform-style: preserve-3d;
+    }
+
+    .fc-card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .fc-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      border: 2px solid var(--ng-border);
+    }
+
+    .fc-front {
+      background: linear-gradient(155deg, var(--ng-white) 0%, var(--ng-blue-light) 100%);
+    }
+
+    .fc-back {
+      background: linear-gradient(155deg, var(--ng-blue-dark) 0%, var(--ng-blue) 100%);
+      color: var(--ng-white);
+      transform: rotateY(180deg);
+      border-color: var(--ng-blue-dark);
+    }
+
+    .fc-badge {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--ng-blue);
+      background: var(--ng-white);
+      border: 1px solid var(--ng-border);
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .fc-weight {
+      font-size: 44px;
+      font-weight: 900;
+      color: var(--ng-blue-dark);
+      margin-bottom: 8px;
+    }
+
+    .fc-note {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ng-muted);
+    }
+
+    .fc-tap-cue {
+      position: absolute;
+      bottom: 14px;
+      font-size: 12px;
+      color: var(--ng-muted);
+    }
+
+    .fc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+      gap: 10px;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .fc-ans {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 14px;
+      padding: 14px 6px;
+    }
+
+    .fc-ans .lbl {
+      font-size: 12px;
+      opacity: 0.88;
+      margin-bottom: 4px;
+    }
+
+    .fc-ans .num {
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .btn-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 14px;
+      min-height: 50px;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.1s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary { background: var(--ng-blue); color: var(--ng-white); }
+    .btn-outline { background: var(--ng-white); color: var(--ng-blue-dark); border: 1.5px solid var(--ng-border); }
+    .btn-success { background: var(--ng-success); color: var(--ng-white); }
+    .btn-warn { background: #ea580c; color: var(--ng-white); }
+
+    /* Quiz & Recall Mobile Boxes */
+    .practice-card {
+      background: var(--ng-white);
+      border: 1px solid var(--ng-border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ebf2fa;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .score-pill {
+      background: var(--ng-blue-light);
+      color: var(--ng-blue-dark);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .question-text {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ng-blue-dark);
+      margin-bottom: 16px;
+      line-height: 1.38;
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .opt-btn {
+      min-height: 56px;
+      background: var(--ng-blue-lighter);
+      border: 2px solid var(--ng-border);
+      color: var(--ng-text);
+      padding: 12px 10px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .opt-btn.correct {
+      background: var(--ng-success-bg);
+      border-color: var(--ng-success);
+      color: var(--ng-success);
+    }
+
+    .opt-btn.wrong {
+      background: var(--ng-danger-bg);
+      border-color: var(--ng-danger);
+      color: var(--ng-danger);
+    }
+
+    .feedback {
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.ok { background: var(--ng-success-bg); color: var(--ng-success); }
+    .feedback.err { background: var(--ng-danger-bg); color: var(--ng-danger); }
+
+    /* Mobile Inputs (font-size >= 16px prevents iOS auto-zoom) */
+    .recall-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .field-label {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--ng-blue-dark);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .input-box {
+      display: flex;
+      align-items: center;
+      border: 2px solid var(--ng-border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--ng-white);
+    }
+
+    .input-box:focus-within {
+      border-color: var(--ng-blue);
+      box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.12);
+    }
+
+    .input-box input {
+      flex: 1;
+      width: 100%;
+      border: none;
+      outline: none;
+      padding: 12px 14px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ng-text);
+      background: transparent;
+    }
+
+    .input-box .unit {
+      background: var(--ng-blue-lighter);
+      color: var(--ng-blue-dark);
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      border-left: 1px solid var(--ng-border);
+    }
+
+    /* Fixed Bottom Navigation (Thumb-friendly) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 540px;
+      background: var(--ng-white);
+      border-top: 1.5px solid var(--ng-border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+      z-index: 100;
+      box-shadow: 0 -4px 16px rgba(10, 54, 115, 0.1);
+    }
+
+    .nav-btn {
+      border: none;
+      background: transparent;
+      color: var(--ng-muted);
+      padding: 6px 4px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .nav-btn .ico {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .nav-btn.active {
+      color: var(--ng-blue);
+      background: var(--ng-blue-light);
+      font-weight: 800;
+    }
+
+    @media (max-width: 360px) {
+      .quiz-options {
+        grid-template-columns: 1fr;
+      }
+      td, th {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Compact Header -->
+    <header class="header">
+      <div class="header-left">
+        <h1>Nấu trân châu cùng Phát nhé</h1>
+        <p>Học nhanh – Ghét tủ đông</p>
+      </div>
+      <div class="brand-pill">PHÁT=GOAT 🔥</div>
+    </header>
+
+    <main class="main-content">
+      <!-- PANEL 1: BẢNG TRA CỨU -->
+      <section id="panel-lookup" class="panel active">
+        <div class="filter-strip" id="lookup-filters">
+          <button class="pill active" data-filter="all">Tất cả (4)</button>
+          <button class="pill" data-filter="hat_e">🌱 Hạt É</button>
+          <button class="pill" data-filter="khoai_mon">🟣 Khoai Môn</button>
+          <button class="pill" data-filter="duong_den">🌑 Đường Đen</button>
+          <button class="pill" data-filter="banh_vuong">⬛⬜ Bánh Vuông & Củ Năng</button>
+        </div>
+
+        <div class="blur-bar" id="toggle-blur" role="button" tabindex="0">
+          <div class="blur-bar-text">
+            <span class="blur-bar-title">👁️ Ẩn số để tự nhẩm</span>
+            <span class="blur-bar-sub" id="blur-sub">Bật để che số, chạm từng ô để mở kiểm tra</span>
+          </div>
+          <div class="switch-ui"></div>
+        </div>
+
+        <div class="cards-stack" id="lookup-cards"></div>
+      </section>
+
+      <!-- PANEL 2: THẺ GHI NHỚ -->
+      <section id="panel-flashcard" class="panel">
+        <div class="filter-strip" id="fc-filters">
+          <button class="pill active" data-filter="all">Tất cả (14)</button>
+          <button class="pill" data-filter="hat_e">Hạt É</button>
+          <button class="pill" data-filter="khoai_mon">Khoai Môn</button>
+          <button class="pill" data-filter="duong_den">Đường Đen</button>
+          <button class="pill" data-filter="banh_vuong">Bánh Vuông & Củ Năng</button>
+        </div>
+
+        <div class="fc-top-bar">
+          <span id="fc-progress">Thẻ 1 / 14 • Đã thuộc: 0</span>
+          <button class="shuffle-mini" id="fc-shuffle">🔀 Trộn thẻ</button>
+        </div>
+
+        <div class="fc-scene" id="fc-scene">
+          <div class="fc-card" id="fc-card">
+            <div class="fc-face fc-front">
+              <div class="fc-badge" id="fc-front-cat">HẠT É</div>
+              <div class="fc-weight" id="fc-front-weight">10gr</div>
+              <div class="fc-note" id="fc-front-note">HSD: 2 ngày mát</div>
+              <div class="fc-tap-cue">👆 Chạm để lật xem • Vuốt để chuyển</div>
+            </div>
+            <div class="fc-face fc-back">
+              <div class="fc-badge" id="fc-back-title">HẠT É • 10gr</div>
+              <div class="fc-grid" id="fc-back-grid"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row-2">
+          <button class="btn btn-warn" id="fc-again">🔁 Chưa nhớ</button>
+          <button class="btn btn-success" id="fc-known">✅ Đã thuộc</button>
+        </div>
+      </section>
+
+      <!-- PANEL 3: TRẮC NGHIỆM -->
+      <section id="panel-quiz" class="panel">
+        <div class="filter-strip" id="quiz-filters">
+          <button class="pill active" data-filter="all">Trộn tất cả</button>
+          <button class="pill" data-filter="hat_e">Hạt É</button>
+          <button class="pill" data-filter="khoai_mon">Khoai Môn</button>
+          <button class="pill" data-filter="duong_den">Đường Đen</button>
+          <button class="pill" data-filter="banh_vuong">Bánh Vuông & Củ Năng</button>
+        </div>
+
+        <div class="practice-card">
+          <div class="stats-row">
+            <span id="quiz-streak">🔥 Chuỗi: 0</span>
+            <span class="score-pill" id="quiz-score">Đúng: 0 / 0</span>
+          </div>
+          <div class="question-text" id="quiz-question">...</div>
+          <div class="quiz-options" id="quiz-options"></div>
+          <div class="feedback" id="quiz-feedback"></div>
+          <button class="btn btn-primary" id="quiz-next" style="width: 100%; display: none;">Câu tiếp theo →</button>
+        </div>
+      </section>
+
+      <!-- PANEL 4: ĐIỀN SỐ -->
+      <section id="panel-recall" class="panel">
+        <div class="filter-strip" id="recall-filters">
+          <button class="pill active" data-filter="all">Tất cả loại</button>
+          <button class="pill" data-filter="hat_e">Hạt É</button>
+          <button class="pill" data-filter="khoai_mon">Khoai Môn</button>
+          <button class="pill" data-filter="duong_den">Đường Đen</button>
+          <button class="pill" data-filter="banh_vuong">Bánh Vuông & Củ Năng</button>
+        </div>
+
+        <div class="practice-card">
+          <div class="stats-row">
+            <span>✍️ Điền số thực chiến</span>
+            <span class="score-pill" id="recall-score">Đúng: 0 / 0</span>
+          </div>
+          <div class="question-text" id="recall-prompt">...</div>
+          <div class="recall-fields" id="recall-fields"></div>
+          <div class="feedback" id="recall-feedback"></div>
+          <div class="btn-row-2">
+            <button class="btn btn-primary" id="recall-check">Kiểm tra</button>
+            <button class="btn btn-outline" id="recall-next">Câu khác →</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Thumb Navigation -->
+    <nav class="bottom-nav" aria-label="Menu chính">
+      <button class="nav-btn active" data-tab="lookup">
+        <span class="ico">📘</span>
+        <span>Bảng học</span>
+      </button>
+      <button class="nav-btn" data-tab="flashcard">
+        <span class="ico">🃏</span>
+        <span>Thẻ nhớ</span>
+      </button>
+      <button class="nav-btn" data-tab="quiz">
+        <span class="ico">⚡</span>
+        <span>Trắc nghiệm</span>
+      </button>
+      <button class="nav-btn" data-tab="recall">
+        <span class="ico">✍️</span>
+        <span>Điền số</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    // Dữ liệu chuẩn xác 100% (đã bỏ Viên Khoai Dẻo Tam Sắc)
+    const RECIPES = [
+      {
+        id: "hat_e",
+        name: "Hạt É",
+        icon: "🌱",
+        note: "HSD Thành Phẩm: 2 ngày mát",
+        hasSyrup: false,
+        waterLabel: "Nước",
+        sugarLabel: "Nước đường",
+        tip: "Cứ mỗi 10gr = +300ml Nước & +50cc Nước đường (10→300/50, 20→600/100, 30→900/150).",
+        rows: [
+          { weightText: "10gr", water: 300, sugar: 50 },
+          { weightText: "20gr", water: 600, sugar: 100 },
+          { weightText: "30gr", water: 900, sugar: 150 }
+        ]
+      },
+      {
+        id: "khoai_mon",
+        name: "Trân Châu Khoai Môn",
+        icon: "🟣",
+        note: "Nấu 3p – 0 Ủ",
+        hasSyrup: false,
+        waterLabel: "Nước",
+        sugarLabel: "Nước đường",
+        tip: "Nấu 3p, KHÔNG ủ. Nước đường tăng +25cc (25→50→75). Nhớ kỹ: 300gr & 500gr ĐỀU dùng 2500ml nước!",
+        rows: [
+          { weightText: "150gr", water: 1500, sugar: 25 },
+          { weightText: "300gr", water: 2500, sugar: 50 },
+          { weightText: "500gr", water: 2500, sugar: 75 }
+        ]
+      },
+      {
+        id: "duong_den",
+        name: "Trân Châu Đường Đen",
+        icon: "🌑",
+        note: "Nấu 30p – Ủ 30p",
+        hasSyrup: true,
+        waterLabel: "Nước",
+        sugarLabel: "Nước đường",
+        tip: "Nước tăng đều +1000ml (2000→6000). Đường: 60→120 (+60), rồi +50 đều (170→220→270). Siro: 90→200→250→300→390cc.",
+        rows: [
+          { weightText: "500gr",  water: 2000, sugar: 60,  syrup: 90 },
+          { weightText: "1000gr", water: 3000, sugar: 120, syrup: 200 },
+          { weightText: "1500gr", water: 4000, sugar: 170, syrup: 250 },
+          { weightText: "2000gr", water: 5000, sugar: 220, syrup: 300 },
+          { weightText: "2500gr", water: 6000, sugar: 270, syrup: 390 }
+        ]
+      },
+      {
+        id: "banh_vuong",
+        name: "Bánh Vuông Đường Đen, TC Củ Năng",
+        icon: "⬛⬜",
+        note: "Mục 2.2 – Định lượng chuẩn",
+        hasSyrup: false,
+        waterLabel: "Lượng nước",
+        sugarLabel: "Nước đường",
+        tip: "Mốc 300 – 500 – 1000gram. Nước tăng +1000ml (2000→3000→4000). Nước đường NHÂN ĐÔI mỗi bậc (50→100→200cc).",
+        rows: [
+          { weightText: "300gram",  water: 2000, sugar: 50 },
+          { weightText: "500gram",  water: 3000, sugar: 100 },
+          { weightText: "1000gram", water: 4000, sugar: 200 }
+        ]
+      }
+    ];
+
+    const ALL_ITEMS = [];
+    RECIPES.forEach(r => {
+      r.rows.forEach(row => {
+        ALL_ITEMS.push({
+          recipeId: r.id,
+          name: r.name,
+          icon: r.icon,
+          note: r.note,
+          hasSyrup: r.hasSyrup,
+          waterLabel: r.waterLabel,
+          sugarLabel: r.sugarLabel,
+          ...row
+        });
+      });
+    });
+
+    // ================= BOTTOM NAV SWITCHING =================
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("panel-" + btn.dataset.tab).classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+
+    // ================= PANEL 1: LOOKUP =================
+    let currentLookupFilter = "all";
+    let blurMode = false;
+
+    function renderLookup() {
+      const container = document.getElementById("lookup-cards");
+      const list = currentLookupFilter === "all"
+        ? RECIPES
+        : RECIPES.filter(r => r.id === currentLookupFilter);
+
+      container.innerHTML = list.map(r => `
+        <article class="card ${blurMode ? "blur-mode" : ""}">
+          <div class="card-header">
+            <div class="card-title-row">
+              <div class="card-title"><span>${r.icon}</span> <span>${r.name}</span></div>
+            </div>
+            <span class="meta-tag">${r.note}</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Định lượng</th>
+                <th>${r.waterLabel}</th>
+                <th>${r.sugarLabel}</th>
+                ${r.hasSyrup ? "<th>Siro</th>" : ""}
+              </tr>
+            </thead>
+            <tbody>
+              ${r.rows.map(row => `
+                <tr>
+                  <td class="weight-col">${row.weightText}</td>
+                  <td class="secret-cell" onclick="this.classList.toggle('revealed')">
+                    <span class="val">${row.water}ml</span>
+                  </td>
+                  <td class="secret-cell" onclick="this.classList.toggle('revealed')">
+                    <span class="val">${row.sugar}cc</span>
+                  </td>
+                  ${r.hasSyrup ? `
+                    <td class="secret-cell" onclick="this.classList.toggle('revealed')">
+                      <span class="val">${row.syrup}cc</span>
+                    </td>` : ""}
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+          <div class="tip-box">
+            <span>💡</span>
+            <div><strong>Mẹo nhớ:</strong> ${r.tip}</div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    document.querySelectorAll("#lookup-filters .pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        document.querySelectorAll("#lookup-filters .pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+        currentLookupFilter = pill.dataset.filter;
+        renderLookup();
+      });
+    });
+
+    document.getElementById("toggle-blur").addEventListener("click", function () {
+      blurMode = !blurMode;
+      this.classList.toggle("active", blurMode);
+      document.getElementById("blur-sub").textContent = blurMode
+        ? "Đang che số! Chạm vào từng ô mờ để xem đáp án"
+        : "Bật để che số, chạm từng ô để mở kiểm tra";
+      renderLookup();
+    });
+
+    // ================= PANEL 2: FLASHCARDS (WITH SWIPE) =================
+    let fcFilter = "all";
+    let fcDeck = [...ALL_ITEMS];
+    let fcIndex = 0;
+    let fcMastered = 0;
+
+    function buildFcDeck(shuffle = false) {
+      fcDeck = fcFilter === "all" ? [...ALL_ITEMS] : ALL_ITEMS.filter(i => i.recipeId === fcFilter);
+      if (shuffle) {
+        for (let i = fcDeck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [fcDeck[i], fcDeck[j]] = [fcDeck[j], fcDeck[i]];
+        }
+      }
+      fcIndex = 0;
+      fcMastered = 0;
+      renderFlashcard();
+    }
+
+    function renderFlashcard() {
+      document.getElementById("fc-card").classList.remove("flipped");
+      const item = fcDeck[fcIndex];
+      document.getElementById("fc-progress").textContent = `Thẻ ${fcIndex + 1} / ${fcDeck.length} • Đã thuộc: ${fcMastered}`;
+
+      document.getElementById("fc-front-cat").textContent = `${item.icon} ${item.name}`;
+      document.getElementById("fc-front-weight").textContent = item.weightText;
+      document.getElementById("fc-front-note").textContent = item.note;
+
+      document.getElementById("fc-back-title").textContent = `${item.name} • ${item.weightText}`;
+      let gridHtml = `
+        <div class="fc-ans">
+          <div class="lbl">${item.waterLabel}</div>
+          <div class="num">${item.water}ml</div>
+        </div>
+        <div class="fc-ans">
+          <div class="lbl">${item.sugarLabel}</div>
+          <div class="num">${item.sugar}cc</div>
+        </div>
+      `;
+      if (item.hasSyrup) {
+        gridHtml += `
+          <div class="fc-ans">
+            <div class="lbl">Siro</div>
+            <div class="num">${item.syrup}cc</div>
+          </div>
+        `;
+      }
+      document.getElementById("fc-back-grid").innerHTML = gridHtml;
+    }
+
+    function markKnown() {
+      fcMastered++;
+      fcIndex = (fcIndex + 1) % fcDeck.length;
+      renderFlashcard();
+    }
+
+    function markAgain() {
+      const current = fcDeck.splice(fcIndex, 1)[0];
+      fcDeck.push(current);
+      if (fcIndex >= fcDeck.length) fcIndex = 0;
+      renderFlashcard();
+    }
+
+    const fcScene = document.getElementById("fc-scene");
+    let touchStartX = 0;
+    let isSwiping = false;
+
+    fcScene.addEventListener("touchstart", e => {
+      touchStartX = e.changedTouches[0].screenX;
+      isSwiping = false;
+    }, { passive: true });
+
+    fcScene.addEventListener("touchend", e => {
+      const diff = e.changedTouches[0].screenX - touchStartX;
+      if (Math.abs(diff) > 55) {
+        isSwiping = true;
+        if (diff > 0) markKnown();
+        else markAgain();
+      }
+    }, { passive: true });
+
+    fcScene.addEventListener("click", () => {
+      if (!isSwiping) {
+        document.getElementById("fc-card").classList.toggle("flipped");
+      }
+      isSwiping = false;
+    });
+
+    document.getElementById("fc-known").addEventListener("click", markKnown);
+    document.getElementById("fc-again").addEventListener("click", markAgain);
+    document.getElementById("fc-shuffle").addEventListener("click", () => buildFcDeck(true));
+
+    document.querySelectorAll("#fc-filters .pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        document.querySelectorAll("#fc-filters .pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+        fcFilter = pill.dataset.filter;
+        buildFcDeck(false);
+      });
+    });
+
+    // ================= PANEL 3: QUIZ =================
+    let quizFilter = "all";
+    let quizCorrect = 0;
+    let quizTotal = 0;
+    let quizStreak = 0;
+    let currentQuizAnswer = "";
+
+    function generateQuiz() {
+      const pool = quizFilter === "all" ? ALL_ITEMS : ALL_ITEMS.filter(i => i.recipeId === quizFilter);
+      const item = pool[Math.floor(Math.random() * pool.length)];
+
+      const types = ["water", "sugar"];
+      if (item.hasSyrup) types.push("syrup");
+      if (item.recipeId === "khoai_mon" || item.recipeId === "duong_den") types.push("time");
+
+      const qType = types[Math.floor(Math.random() * types.length)];
+      let qText = "";
+      let correctVal = "";
+      let distractors = new Set();
+
+      if (qType === "water") {
+        qText = `Nấu ${item.weightText} "${item.name}" cần bao nhiêu ${item.waterLabel.toLowerCase()}?`;
+        correctVal = `${item.water}ml`;
+        [item.water - 500, item.water + 500, item.water + 1000, item.water - 1000, item.water + 300]
+          .filter(v => v > 0 && v !== item.water)
+          .forEach(v => distractors.add(`${v}ml`));
+      } else if (qType === "sugar") {
+        qText = `Nấu ${item.weightText} "${item.name}" cần bao nhiêu Nước đường?`;
+        correctVal = `${item.sugar}cc`;
+        [item.sugar - 25, item.sugar + 25, item.sugar + 50, item.sugar * 2, item.sugar + 10, item.sugar - 10]
+          .filter(v => v > 0 && v !== item.sugar)
+          .forEach(v => distractors.add(`${v}cc`));
+      } else if (qType === "syrup") {
+        qText = `Nấu ${item.weightText} "${item.name}" cần bao nhiêu Siro?`;
+        correctVal = `${item.syrup}cc`;
+        [90, 200, 250, 300, 390, 150, 350]
+          .filter(v => v !== item.syrup)
+          .forEach(v => distractors.add(`${v}cc`));
+      } else {
+        qText = `Thời gian nấu & ủ của "${item.name}" là gì?`;
+        correctVal = item.note;
+        ["Nấu 3p – 0 Ủ", "Nấu 30p – Ủ 30p", "Nấu 20p – Ủ 20p", "Nấu 15p – Ủ 15p", "Nấu 30p – 0 Ủ"]
+          .filter(v => v !== correctVal)
+          .forEach(v => distractors.add(v));
+      }
+
+      const options = [correctVal, ...Array.from(distractors).slice(0, 3)];
+      for (let i = options.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [options[i], options[j]] = [options[j], options[i]];
+      }
+
+      currentQuizAnswer = correctVal;
+      document.getElementById("quiz-question").textContent = qText;
+      document.getElementById("quiz-feedback").className = "feedback";
+      document.getElementById("quiz-next").style.display = "none";
+
+      const optsEl = document.getElementById("quiz-options");
+      optsEl.innerHTML = options.map(opt => `<button class="opt-btn">${opt}</button>`).join("");
+      optsEl.querySelectorAll(".opt-btn").forEach(btn => {
+        btn.addEventListener("click", () => handleQuizAnswer(btn, optsEl));
+      });
+    }
+
+    function handleQuizAnswer(clickedBtn, optsEl) {
+      const buttons = optsEl.querySelectorAll(".opt-btn");
+      buttons.forEach(b => (b.disabled = true));
+
+      quizTotal++;
+      const fb = document.getElementById("quiz-feedback");
+
+      if (clickedBtn.textContent === currentQuizAnswer) {
+        clickedBtn.classList.add("correct");
+        quizCorrect++;
+        quizStreak++;
+        fb.textContent = "✅ Chính xác! Nhớ quá chuẩn.";
+        fb.className = "feedback show ok";
+      } else {
+        clickedBtn.classList.add("wrong");
+        quizStreak = 0;
+        buttons.forEach(b => {
+          if (b.textContent === currentQuizAnswer) b.classList.add("correct");
+        });
+        fb.textContent = `❌ Sai rồi! Đáp án đúng: ${currentQuizAnswer}`;
+        fb.className = "feedback show err";
+      }
+
+      document.getElementById("quiz-score").textContent = `Đúng: ${quizCorrect} / ${quizTotal}`;
+      document.getElementById("quiz-streak").textContent = `🔥 Chuỗi: ${quizStreak}`;
+      document.getElementById("quiz-next").style.display = "flex";
+    }
+
+    document.getElementById("quiz-next").addEventListener("click", generateQuiz);
+
+    document.querySelectorAll("#quiz-filters .pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        document.querySelectorAll("#quiz-filters .pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+        quizFilter = pill.dataset.filter;
+        generateQuiz();
+      });
+    });
+
+    // ================= PANEL 4: ACTIVE RECALL =================
+    let recallFilter = "all";
+    let recallItem = null;
+    let recallCorrect = 0;
+    let recallTotal = 0;
+    let recallAnswered = false;
+
+    function loadRecall() {
+      const pool = recallFilter === "all" ? ALL_ITEMS : ALL_ITEMS.filter(i => i.recipeId === recallFilter);
+      recallItem = pool[Math.floor(Math.random() * pool.length)];
+      recallAnswered = false;
+
+      document.getElementById("recall-prompt").textContent =
+        `${recallItem.icon} ${recallItem.name} (${recallItem.weightText})`;
+      document.getElementById("recall-feedback").className = "feedback";
+
+      let fieldsHtml = `
+        <div>
+          <label class="field-label" for="inp-water">${recallItem.waterLabel}</label>
+          <div class="input-box">
+            <input type="number" id="inp-water" placeholder="Ví dụ: 2000" inputmode="numeric" pattern="[0-9]*" enterkeyhint="next" />
+            <span class="unit">ml</span>
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="inp-sugar">${recallItem.sugarLabel}</label>
+          <div class="input-box">
+            <input type="number" id="inp-sugar" placeholder="Ví dụ: 50" inputmode="numeric" pattern="[0-9]*" enterkeyhint="${recallItem.hasSyrup ? "next" : "done"}" />
+            <span class="unit">cc</span>
+          </div>
+        </div>
+      `;
+
+      if (recallItem.hasSyrup) {
+        fieldsHtml += `
+          <div>
+            <label class="field-label" for="inp-syrup">Siro</label>
+            <div class="input-box">
+              <input type="number" id="inp-syrup" placeholder="Ví dụ: 90" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" />
+              <span class="unit">cc</span>
+            </div>
+          </div>
+        `;
+      }
+
+      const fieldsContainer = document.getElementById("recall-fields");
+      fieldsContainer.innerHTML = fieldsHtml;
+
+      // Mobile keyboard Enter/Next navigation
+      const wInp = document.getElementById("inp-water");
+      const sInp = document.getElementById("inp-sugar");
+      const syInp = document.getElementById("inp-syrup");
+
+      wInp.addEventListener("keydown", e => {
+        if (e.key === "Enter") { e.preventDefault(); sInp.focus(); }
+      });
+      sInp.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (syInp) syInp.focus();
+          else checkRecall();
+        }
+      });
+      if (syInp) {
+        syInp.addEventListener("keydown", e => {
+          if (e.key === "Enter") { e.preventDefault(); checkRecall(); }
+        });
+      }
+    }
+
+    function checkRecall() {
+      if (recallAnswered) return;
+
+      const w = Number(document.getElementById("inp-water").value.trim());
+      const s = Number(document.getElementById("inp-sugar").value.trim());
+      const sy = recallItem.hasSyrup ? Number(document.getElementById("inp-syrup").value.trim()) : null;
+
+      if (!w || !s || (recallItem.hasSyrup && !sy)) {
+        const fb = document.getElementById("recall-feedback");
+        fb.textContent = "⚠️ Điền đủ các ô trước khi kiểm tra nhé!";
+        fb.className = "feedback show err";
+        return;
+      }
+
+      recallAnswered = true;
+      recallTotal++;
+      const isOk = w === recallItem.water && s === recallItem.sugar && (!recallItem.hasSyrup || sy === recallItem.syrup);
+
+      const fb = document.getElementById("recall-feedback");
+      if (isOk) {
+        recallCorrect++;
+        fb.textContent = `✅ Chuẩn không cần chỉnh! (${recallItem.note})`;
+        fb.className = "feedback show ok";
+      } else {
+        const ans = `${recallItem.waterLabel}: ${recallItem.water}ml • ${recallItem.sugarLabel}: ${recallItem.sugar}cc` +
+          (recallItem.hasSyrup ? ` • Siro: ${recallItem.syrup}cc` : "");
+        fb.textContent = `❌ Chưa đúng! Đáp án: ${ans}`;
+        fb.className = "feedback show err";
+      }
+
+      document.getElementById("recall-score").textContent = `Đúng: ${recallCorrect} / ${recallTotal}`;
+      if (document.activeElement) document.activeElement.blur();
+    }
+
+    document.getElementById("recall-check").addEventListener("click", checkRecall);
+    document.getElementById("recall-next").addEventListener("click", loadRecall);
+
+    document.querySelectorAll("#recall-filters .pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        document.querySelectorAll("#recall-filters .pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+        recallFilter = pill.dataset.filter;
+        loadRecall();
+      });
+    });
+
+    // Init
+    renderLookup();
+    buildFcDeck(false);
+    generateQuiz();
+    loadRecall();
+  </script>
+</body>
+</html>
